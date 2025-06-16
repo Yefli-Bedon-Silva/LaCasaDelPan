@@ -2,7 +2,7 @@ package com.Panaderia.Controladores;
 
 import com.Panaderia.Modelo.Carrito;
 import com.Panaderia.Modelo.Clientes;
-import com.Panaderia.Modelo.PedidoForm;
+/*import com.Panaderia.Modelo.PedidoForm;*/
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +33,7 @@ public class ControladorVenta {
         }
 
         // Agregamos formulario vacío para el binding
-        model.addAttribute("pedidoForm", new PedidoForm());
+       /* model.addAttribute("pedidoForm", new PedidoForm());*/
 
         return "Cuestionario";
     }

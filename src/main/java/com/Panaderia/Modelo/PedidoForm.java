@@ -1,4 +1,4 @@
-package com.Panaderia.Modelo;
+/*package com.Panaderia.Modelo;
 //PedidoForm, Item y Carrito son procesos internos, no tiene BD
 import java.util.ArrayList;
 import java.util.List;
@@ -34,4 +34,4 @@ public class PedidoForm {
             this.cantidad = cantidad;
         }
     }
-}
+}*/
