@@ -26,6 +26,7 @@ public class ControladorPedido {
     @Autowired
     private ProductoRepositorio productoRepository;
     
+    
 @PostMapping("/pedido")
 public String procesarPedido(HttpSession session, Model model) {
     Carrito carrito = (Carrito) session.getAttribute("carrito");
@@ -49,19 +50,19 @@ Producto producto = productoRepository.findById(item.getId()).orElseThrow();
         
         PedidoItem pedidoItem = new PedidoItem();
         pedidoItem.setPedido(pedido);
-        pedidoItem.setProducto(producto);
+        pedidoItem.setIdProducto(producto);
         pedidoItem.setCantidad(item.getCantidad());
         pedidoItem.setPrecioUnitario(BigDecimal.valueOf(producto.getPrecio()));
         BigDecimal totalItem = BigDecimal.valueOf(producto.getPrecio())
                                           .multiply(BigDecimal.valueOf(item.getCantidad()));
-        pedidoItem.setTotal(totalItem);
+        
 
         items.add(pedidoItem);
         totalPedido = totalPedido.add(totalItem);
     }
 
     pedido.setItems(items);
-    pedido.setTotal(totalPedido);
+    
 
     pedidoRepository.save(pedido);
 

@@ -9,7 +9,7 @@ public class PedidoItemDTO {
     private String nombreProducto;
     private Integer cantidad;
     private BigDecimal precioUnitario;
-    private BigDecimal total;
+  
 
     public Long getId() {
         return id;
@@ -51,11 +51,5 @@ public class PedidoItemDTO {
         this.precioUnitario = precioUnitario;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
+   
 }

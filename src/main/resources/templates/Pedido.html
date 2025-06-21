@@ -92,7 +92,7 @@
                     <li><a href="listapanes">Productos</a></li>
                     <li><a href="carritocompras">Carrito de Compras</a></li>
                     <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
-                    <li><a href="/Pedido">Mis Pedidos</a></li>
+                    <li><a href="/RegistroPedido">Mis Pedidos</a></li>
                 </ul>
             </nav>
             <div>
@@ -104,45 +104,9 @@
         <div class="container py-5">
             <h1 class="mb-4 text-center">¡Gracias por tu compra!</h1>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    Resumen de tu pedido
-                </div>
-                <div class="card-body">
-                    <p>Tu pedido ha sido recibido y está en proceso. Aquí tienes el resumen:</p>
-                    <p>Items en carrito: <span th:text="${items.size()}"></span></p>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Cantidad</th>
-                                <th>Precio</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${items}">
-                                <td th:text="${item.nombre}">Nombre</td>
-                                <td th:text="${item.cantidad}">Cantidad</td>
-                                <td th:text="${#numbers.formatDecimal(item.precio, 1, 'POINT', 2, 'POINT')}">Precio</td>
-                                <td th:text="${#numbers.formatDecimal(item.total, 1, 'POINT', 2, 'POINT')}">Total</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p class="text-end fw-bold fs-5">
-                        Total a pagar: <span th:text="|S/. ${#numbers.formatDecimal(total, 1, 'POINT', 2, 'POINT')}|"></span>
-
-                    </p>
-                    <div class="d-flex justify-content-end gap-2 mt-3">
-                        <button class="btn btn-success" onclick="window.print()">Imprimir Recibo</button>
-                        <button class="btn btn-primary" disabled>Descargar PDF</button>
-                    </div>
-                    <div class="alert alert-info mt-4 mb-0" role="alert">
-                        Recibirás un correo con los detalles y la fecha estimada de entrega.
-                    </div>
-                </div>
-            </div>
+            <div id="pedidos-container">
+            
+        </div>
         </div>
 
         <footer>
@@ -185,7 +149,110 @@
                 &copy; Mundo Pan 2025
             </div>  
         </footer>
+        
+       <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/adminventas/mis-pedidos');
+                if (!res.ok) throw new Error("Debes iniciar sesión para ver tus pedidos.");
+                const pedidos = await res.json();
 
+                const container = document.getElementById('pedidos-container');
+
+                if (pedidos.length === 0) {
+                    container.innerHTML = '<p class="text-center">No tienes pedidos aún.</p>';
+                    return;
+                }
+
+                pedidos.forEach(pedido => {
+                    // Crear tarjeta
+                    const card = document.createElement('div');
+                    card.className = 'card shadow-sm mb-4';
+
+                    // Card header
+                    const cardHeader = document.createElement('div');
+                    cardHeader.className = 'card-header bg-primary text-white';
+                    cardHeader.textContent = `Pedido #${pedido.id} - Fecha: ${pedido.fecha.substring(0,10)}`;
+                    card.appendChild(cardHeader);
+
+                    // Card body
+                    const cardBody = document.createElement('div');
+                    cardBody.className = 'card-body';
+
+                    // Estado del pedido
+                    const estadoP = document.createElement('p');
+                    estadoP.innerHTML = `<strong>Estado:</strong> ${pedido.estado}`;
+                    cardBody.appendChild(estadoP);
+
+                    // Tabla con items
+                    const tabla = document.createElement('table');
+                    tabla.className = 'table';
+
+                    tabla.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pedido.items.map(item => `
+                                <tr>
+                                    <td>${item.nombreProducto}</td>
+                                    <td>${item.cantidad}</td>
+                                    <td>S/. ${item.precioUnitario.toFixed(2)}</td>
+                                    <td>S/. ${(item.cantidad * item.precioUnitario).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+                    cardBody.appendChild(tabla);
+
+                    // Total pedido
+                    const totalP = document.createElement('p');
+                    totalP.className = 'text-end fw-bold fs-5 price';
+                    const totalCalculado = pedido.items.reduce((acc, i) => acc + i.cantidad * i.precioUnitario, 0);
+                    totalP.innerHTML = `Total a pagar: S/. ${totalCalculado.toFixed(2)}`;
+                    cardBody.appendChild(totalP);
+
+                    // Botones
+                    const botonesDiv = document.createElement('div');
+                    botonesDiv.className = 'd-flex justify-content-end gap-2 mt-3';
+
+                    const btnImprimir = document.createElement('button');
+                    btnImprimir.className = 'btn btn-success';
+                    btnImprimir.textContent = 'Imprimir Recibo';
+                    btnImprimir.onclick = () => window.print();
+
+                    const btnPDF = document.createElement('button');
+                    btnPDF.className = 'btn btn-primary';
+                    btnPDF.textContent = 'Descargar PDF';
+                    btnPDF.disabled = true; // Lo dejamos deshabilitado igual que tu original
+
+                    botonesDiv.appendChild(btnImprimir);
+                    botonesDiv.appendChild(btnPDF);
+                    cardBody.appendChild(botonesDiv);
+
+                    // Mensaje info
+                    const alertInfo = document.createElement('div');
+                    alertInfo.className = 'alert alert-info mt-4 mb-0';
+                    alertInfo.textContent = 'Recibirás un correo con los detalles y la fecha estimada de entrega.';
+                    cardBody.appendChild(alertInfo);
+
+                    card.appendChild(cardBody);
+
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        });
+    </script>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

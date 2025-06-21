@@ -1,7 +1,7 @@
 
 package com.Panaderia.Controladores;
 import com.Panaderia.Modelo.Clientes;
-import com.Panaderia.DTO.ClientesDTO;
+import com.Panaderia.dto.ClientesDTO;
 import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Servicios.ClientesServicio;
 import java.util.List;

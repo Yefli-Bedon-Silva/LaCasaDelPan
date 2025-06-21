@@ -27,8 +27,7 @@ public class Pedido {
     @Column(length = 20, nullable = false)
     private String estado = "pendiente";
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal total;
+    
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoItem> items;

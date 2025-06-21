@@ -1,4 +1,4 @@
-package com.Panaderia.DTO;
+package com.Panaderia.dto;
 
 import com.Panaderia.Modelo.Clientes;
 import com.Panaderia.Modelo.Rol;
