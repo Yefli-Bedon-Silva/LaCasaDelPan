@@ -28,52 +28,59 @@ public class ControladorReclamos {
     private ReclamoRepositorio reclamoRepositorio;
 
     @Autowired
-    private ClientesRepositorio clienterepositorio;
-
-    @Autowired
     private ClientesServicio clientesServicio;
 
     @GetMapping("/reclamos")
-    public String mostrarFormularioCompra(Model model, HttpSession session) {
-        agregarNombreClienteAlModelo(model);
-        Clientes cliente = (Clientes) session.getAttribute("cliente");
-        if (cliente != null) {
-            model.addAttribute("nombreCli", cliente.getNombreCli());
-            model.addAttribute("apellidosCli", cliente.getApellidosCli());
-            model.addAttribute("dni", cliente.getDni());
-            model.addAttribute("direccion", cliente.getDireccion());
-            model.addAttribute("telefono", cliente.getTelefono());
-            model.addAttribute("correo", cliente.getCorreo());
-        }
-        return "FrmReclamos";
-    }
-
-    private void agregarNombreClienteAlModelo(Model modelo) {
+    public String mostrarFormularioCompra(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getName())) {
-
             String correo = authentication.getName();
             Optional<Clientes> clienteOpt = clientesServicio.findClienteByCorreo(correo);
 
             if (clienteOpt.isPresent()) {
-                modelo.addAttribute("nombreCliente", clienteOpt.get().getNombreCli());
-                return;
+                Clientes cliente = clienteOpt.get();
+
+                // Crear ReclamoDTO y llenarlo con los datos del cliente
+                ReclamoDTO reclamoDTO = new ReclamoDTO();
+                reclamoDTO.setCorreo(cliente.getCorreo());
+                reclamoDTO.setDni(cliente.getDni());
+                reclamoDTO.setNombre(cliente.getNombreCli());
+                reclamoDTO.setApellidos(cliente.getApellidosCli());
+                reclamoDTO.setDireccion(cliente.getDireccion());
+                reclamoDTO.setTelefono(cliente.getTelefono());
+
+                model.addAttribute("reclamoDTO", reclamoDTO); // se puede usar en Thymeleaf
+                model.addAttribute("nombreCliente", cliente.getNombreCli());
+
+                return "FrmReclamos";
             }
         }
-        modelo.addAttribute("nombreCliente", "Invitado");
+
+        // Si no está autenticado
+        model.addAttribute("nombreCliente", "Invitado");
+        return "redirect:/login"; // o redirige a login si deseas
     }
 
     @PostMapping("/Nuevo")
-    public ResponseEntity<?> crearReclamo(@RequestBody ReclamoDTO dto,
-            /*@AuthenticationPrincipal*/ HttpSession session) {
+    public ResponseEntity<?> crearReclamo(@RequestBody ReclamoDTO dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Clientes cliente = (Clientes) session.getAttribute("cliente");
-
-        if (cliente == null) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getName())) {
             return ResponseEntity.badRequest().body("Usuario no autenticado");
         }
+
+        String correo = authentication.getName();
+        Optional<Clientes> clienteOpt = clientesServicio.findClienteByCorreo(correo);
+
+        if (clienteOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Cliente no encontrado");
+        }
+
+        Clientes cliente = clienteOpt.get();
+
         Reclamo reclamo = new Reclamo();
         reclamo.setFechapedido(dto.getFechapedido());
         reclamo.setMotivoReclamo(dto.getMotivoReclamo());
@@ -81,6 +88,7 @@ public class ControladorReclamos {
         reclamo.setEstadoReclamo("pendiente");
         reclamo.setIdCliente(cliente);
         reclamo.setFechaReclamo(new Timestamp(System.currentTimeMillis()));
+
         reclamoRepositorio.save(reclamo);
         return ResponseEntity.ok("Reclamo registrado con éxito");
     }

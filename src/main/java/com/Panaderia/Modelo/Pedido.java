@@ -27,8 +27,10 @@ public class Pedido {
     @Column(length = 20, nullable = false)
     private String estado = "pendiente";
 
-    
-
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoItem> items;
+        
+    @Column(nullable = false)
+    private BigDecimal total; // ✅ Esta línea es fundamental
+    
 }

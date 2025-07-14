@@ -225,6 +225,7 @@
                 <div class="modal fade" id="modalAgregar" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
                         <form method="post" action="/adminproductos/guardar" class="modal-content">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <div class="modal-header">
                                 <h5 class="modal-title">Agregar Producto</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -260,6 +261,7 @@
                 <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
                         <form method="post" action="/adminproductos/guardar" class="modal-content">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <div class="modal-header">
                                 <h5 class="modal-title">Editar Producto</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

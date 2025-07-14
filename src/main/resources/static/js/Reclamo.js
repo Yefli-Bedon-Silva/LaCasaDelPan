@@ -7,11 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const detalle = document.getElementById('detalle').value.trim();
         const checkTerminos = document.getElementById('flexCheckDefault').checked;
 
-        if (
-            !fechaPedido ||
-            !motivoReclamo || motivoReclamo === "Seleccione un motivo" ||
-            !detalle
-        ) {
+        if (!fechaPedido || !motivoReclamo || motivoReclamo === "Seleccione un motivo" || !detalle) {
             Swal.fire('Campos vacíos', 'Por favor, completa todos los campos del reclamo', 'error');
             return;
         }
@@ -27,10 +23,24 @@ document.addEventListener('DOMContentLoaded', function () {
             detalle: detalle
         };
 
+const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+
+if (!csrfTokenMeta || !csrfHeaderMeta) {
+    console.error("No se encontraron los metadatos CSRF.");
+    Swal.fire('Error interno', 'No se pudo validar el token CSRF.', 'error');
+    return;
+}
+
+const csrfToken = csrfTokenMeta.getAttribute('content');
+const csrfHeader = csrfHeaderMeta.getAttribute('content');
+console.log("CSRF Header:", csrfHeader);
+console.log("CSRF Token:", csrfToken);
         fetch('/Nuevo', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // ✅ Enviar CSRF token en el header
             },
             body: JSON.stringify(reclamoDTO)
         })

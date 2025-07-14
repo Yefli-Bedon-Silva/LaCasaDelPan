@@ -1,5 +1,6 @@
 package com.Panaderia.Servicios;
 
+import com.Panaderia.Modelo.Clientes;
 import com.Panaderia.Modelo.Pedido;
 import com.Panaderia.Repositorio.PedidoRepositorio;
 import com.Panaderia.dto.ClientesDTO;
@@ -17,7 +18,12 @@ public class PedidoServicio {
 
     @Autowired
     private PedidoRepositorio pedidoRepositorio;
+@Autowired
+private ClientesServicio clientesServicio;
 
+public Clientes obtenerClientePorCorreo(String correo) {
+    return clientesServicio.findClienteByCorreo(correo).orElse(null);
+}
     // Listar todos los pedidos
        public List<PedidoDTO> listarPedidos() {
         List<Pedido> pedidos = pedidoRepositorio.findAll();
@@ -52,12 +58,21 @@ public class PedidoServicio {
                 .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + id));
     }
 
-    // Editar estado del pedido (puedes expandir esto para editar más cosas)
-    public Pedido actualizarEstadoPedido(Long id, String nuevoEstado) {
-        Pedido pedido = obtenerPedidoPorId(id);
-        pedido.setEstado(nuevoEstado);
-        return pedidoRepositorio.save(pedido);
+public Pedido actualizarEstadoPedido(Long id, String nuevoEstado) {
+    // Normalizamos el estado recibido
+    String estadoNormalizado = nuevoEstado.toLowerCase().trim();
+
+    // Validamos que el estado sea uno permitido
+    List<String> estadosValidos = List.of("pendiente", "en proceso", "entregado", "cancelado");
+    if (!estadosValidos.contains(estadoNormalizado)) {
+        throw new IllegalArgumentException("Estado inválido: " + nuevoEstado);
     }
+
+    // Si es válido, buscamos el pedido y actualizamos
+    Pedido pedido = obtenerPedidoPorId(id);
+    pedido.setEstado(estadoNormalizado);
+    return pedidoRepositorio.save(pedido);
+}
 
     // Eliminar un pedido por ID
     public void eliminarPedido(Long id) {

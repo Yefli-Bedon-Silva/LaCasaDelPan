@@ -1,4 +1,4 @@
-/*package com.Panaderia.security;
+package com.Panaderia.security;
 import com.Panaderia.Repositorio.ClientesRepositorio;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -29,4 +29,4 @@ public class AdminPasswordUpdater implements CommandLineRunner {
             System.out.println("Admin no encontrado para actualizar contraseña.");
         }
     }
-}*/
+}

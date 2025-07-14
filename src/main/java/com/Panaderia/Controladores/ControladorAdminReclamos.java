@@ -64,15 +64,4 @@ public class ControladorAdminReclamos {
         return "redirect:/adminreclamos";
     }
 
-    /*@GetMapping("/adminreclamos/editar/{id}")
-    public String editarProducto(@PathVariable Long id, Model model) {
-        model.addAttribute("reclamo", reclamoServicio.get(id));
-        return "adminreclamos_form";
-    }*/
- /*
-    @GetMapping("/adminreclamos/eliminar/{id}")
-    public String eliminarProducto(@PathVariable Long id) {
-        reclamoServicio.delete(id);
-        return "redirect:/adminreclamos";
-    }*/
 }

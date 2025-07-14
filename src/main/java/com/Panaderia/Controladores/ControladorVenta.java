@@ -24,9 +24,13 @@ public class ControladorVenta {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             String correo = auth.getName();
-            clientesServicio.findClienteByCorreo(correo).ifPresent(cliente -> 
-                model.addAttribute("nombreCliente", cliente.getNombreCli())
-            );
+            clientesServicio.findClienteByCorreo(correo).ifPresent(cliente -> {
+                model.addAttribute("nombreCliente", cliente.getNombreCli()); // Para el encabezado
+                model.addAttribute("nombreCli", cliente.getNombreCli());     // Para el formulario
+                model.addAttribute("direccion", cliente.getDireccion());
+                model.addAttribute("telefono", cliente.getTelefono());
+                model.addAttribute("correo", cliente.getCorreo());
+            });
         } else {
             model.addAttribute("nombreCliente", "Invitado");
         }
@@ -43,20 +47,4 @@ public class ControladorVenta {
         return "Cuestionario";
     }
 
-    private void agregarNombreClienteAlModelo(Model modelo) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getName())) {
-
-            String correo = authentication.getName();
-            Optional<Clientes> clienteOpt = clientesServicio.findClienteByCorreo(correo);
-
-            if (clienteOpt.isPresent()) {
-                modelo.addAttribute("nombreCliente", clienteOpt.get().getNombreCli());
-                return;
-            }
-        }
-        modelo.addAttribute("nombreCliente", "Invitado");
-    }
 }

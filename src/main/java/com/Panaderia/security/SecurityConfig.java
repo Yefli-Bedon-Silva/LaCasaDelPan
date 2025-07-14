@@ -31,6 +31,9 @@ public class SecurityConfig {
                 .requestMatchers("/", "/inicio", "/listapanes", "/listatortas", "/listabocaditos","/listakekes","/listasalados","/preguntasfrecuentes", "/css/**", "/js/**", "/img/**", "/registro", "/login").permitAll()
                 // Rutas que requieren usuario autenticado
                 .requestMatchers("/carritocompras","/pedido","/RegistroPedido","/cliente/**", "/compras/**").hasRole("USER")
+                
+                .requestMatchers("/reclamos", "/Nuevo").authenticated()
+
                 // Rutas exclusivas para admin
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 // Cualquier otra ruta requiere autenticación

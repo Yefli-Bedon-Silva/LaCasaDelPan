@@ -97,19 +97,16 @@
             <!-- Modal Editar -->
             <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form method="post" action="/adminreclamos/guardar" class="modal-content">
+                    <form method="post" th:action="@{/adminreclamos/guardar}" class="modal-content">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <div class="modal-header">
                             <h5 class="modal-title">Actualizar Estado del Reclamo</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="idReclamo" id="edit-id" />
-
-                            <input class="form-control mb-2" id="edit-cliente" placeholder="ID Cliente" readonly />
-                            <input class="form-control mb-2" id="edit-fecha" placeholder="Fecha Pedido" readonly />
-                            <input class="form-control mb-2" id="edit-motivo" placeholder="Motivo" readonly />
-                            <textarea class="form-control mb-2" id="edit-detalle" placeholder="Detalle" rows="3" readonly></textarea>
-
+                            <!-- campos ocultos y de lectura -->
+                            ...
                             <label for="edit-estado">Estado</label>
                             <select name="estadoReclamo" id="edit-estado" class="form-select mb-2" required>
                                 <option value="pendiente">Pendiente</option>

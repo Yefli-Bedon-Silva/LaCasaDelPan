@@ -29,5 +29,6 @@ public class PedidoItem {
     @Column(name = "precio_unitario")
     private BigDecimal precioUnitario;
 
-    
+     @Column(name = "total", nullable = false)
+    private BigDecimal total; // ✅ Agrega este campo también si usas columna `total`
 }
