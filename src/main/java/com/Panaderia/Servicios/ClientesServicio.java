@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,22 +32,31 @@ public class ClientesServicio {
         cliente.getRoles().add(rol);
         clienteRepository.save(cliente);
     }
-    
-      public List<Clientes> obtenerTodosLosClientes() {
+
+    public List<Clientes> obtenerTodosLosClientes() {
         return clienteRepository.findAll();
     }
-      
-      public void agregarCliente(Clientes cliente) {
-    clienteRepository.save(cliente); // Guarda el cliente en la base de datos
-}
-      
-      
-      public void borrarCliente(Integer id) {
-    clienteRepository.deleteById(id); // Elimina el cliente por ID
-}
-    
+
+    public void agregarCliente(Clientes cliente) {
+        clienteRepository.save(cliente); // Guarda el cliente en la base de datos
+    }
+
+    public void borrarCliente(Integer id) {
+        clienteRepository.deleteById(id); // Elimina el cliente por ID
+    }
 
     public Optional<Clientes> findClienteByCorreo(String correo) {
         return clienteRepository.findByCorreo(correo);
     }
+    public long contarClientes() {
+        return clienteRepository.count();
+    }
+
+    @Transactional
+    public void asignarRolPorDefecto(Clientes cliente) {
+        Rol rolUser = rolRepository.findByNombre("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Rol ROLE_USER no encontrado"));
+        cliente.getRoles().add(rolUser);
+    }
 }
+

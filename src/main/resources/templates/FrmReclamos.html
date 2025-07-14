@@ -93,11 +93,18 @@
             <li><a href="carritocompras">Carrito de Compras</a></li>
             <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
             <li><a href="/RegistroPedido">Mis Pedidos</a></li>
+            <!-- Mostrar "Mi Perfil" solo si está autenticado -->
+            <li sec:authorize="isAuthenticated()">
+                <a href="/cliente/perfil">Mi Perfil</a>
+            </li>
         </ul>
     </nav>
     <div>
-        <span th:text="'Bienvenido, ' + ${session.cliente.nombreCli}"></span> <!-- Nombre del cliente -->
-        <a href="/logout" class="btn btn-outline-danger btn-sm ms-3">Cerrar sesión</a>
+        <span th:text="'Bienvenido, ' + ${nombreCliente}"></span>
+        <form th:action="@{/logout}" method="post" id="logoutForm" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn btn-outline-danger btn-sm ms-3">Cerrar sesión</button>
+        </form>
     </div>
 </header>
 <body>

@@ -2,8 +2,13 @@ package com.Panaderia.Controladores;
 
 import com.Panaderia.Modelo.Carrito;
 import com.Panaderia.Modelo.Clientes;
+import com.Panaderia.Servicios.ClientesServicio;
 /*import com.Panaderia.Modelo.PedidoForm;*/
 import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,16 +16,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ControladorVenta {
 
+    @Autowired
+    private ClientesServicio clientesServicio;
+
     @GetMapping("/cuestionario")
     public String mostrarFormularioCompra(Model model, HttpSession session) {
-        Clientes cliente = (Clientes) session.getAttribute("cliente");
-        if (cliente != null) {
-            model.addAttribute("nombreCli", cliente.getNombreCli());
-            model.addAttribute("apellidosCli", cliente.getApellidosCli());
-            model.addAttribute("dni", cliente.getDni());
-            model.addAttribute("direccion", cliente.getDireccion());
-            model.addAttribute("telefono", cliente.getTelefono());
-            model.addAttribute("correo", cliente.getCorreo());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            String correo = auth.getName();
+            clientesServicio.findClienteByCorreo(correo).ifPresent(cliente -> 
+                model.addAttribute("nombreCliente", cliente.getNombreCli())
+            );
+        } else {
+            model.addAttribute("nombreCliente", "Invitado");
         }
 
         Carrito carrito = (Carrito) session.getAttribute("carrito");
@@ -32,9 +40,23 @@ public class ControladorVenta {
             model.addAttribute("total", 0.0);
         }
 
-        // Agregamos formulario vacío para el binding
-       /* model.addAttribute("pedidoForm", new PedidoForm());*/
-
         return "Cuestionario";
+    }
+
+    private void agregarNombreClienteAlModelo(Model modelo) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName())) {
+
+            String correo = authentication.getName();
+            Optional<Clientes> clienteOpt = clientesServicio.findClienteByCorreo(correo);
+
+            if (clienteOpt.isPresent()) {
+                modelo.addAttribute("nombreCliente", clienteOpt.get().getNombreCli());
+                return;
+            }
+        }
+        modelo.addAttribute("nombreCliente", "Invitado");
     }
 }

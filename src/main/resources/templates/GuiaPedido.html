@@ -1,97 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Guía de Pedidos</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/GuiaPedido.css">
-</head>
- 
-<body>
-    <header>
-        <div class="logo"> Mundo Pan</div>
-        <nav>
-            <ul>
-                <li><a href="inicio">Inicio</a></li>
-                <li><a href="listapanes">Productos</a></li>
-                <li><a href="carritocompras">Carrito de Compras</a></li>
-                <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
-                <li><a href="/RegistroPedido">Mis Pedidos</a></li>
-            </ul>
-        </nav>
-        <div>
-            <span th:text="'Bienvenido, ' + ${session.cliente.nombreCli}">Bienvenido, Usuario</span>
-            <a href="/logout" class="btn btn-outline-danger btn-sm ms-3">Cerrar sesión</a>
-        </div>
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <title>Guía de Pedidos</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/GuiaPedido.css">
+    </head>
 
-   <section class="pedidos-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="pedido-card">
-                    <div class="card-header-custom">
-                        <i class="bi bi-bag-check-fill me-2"></i>
-                        Mis Pedidos - Historial de Compras
-                    </div>
-                    <div class="card-body p-4" id="pedidos-container">
-                       
+    <body>
+        <header>
+            <div class="logo"> Mundo Pan</div>
+            <nav>
+                <ul>
+                    <li><a th:href="@{/inicio}">Inicio</a></li>
+                    <li><a th:href="@{/listapanes}">Productos</a></li>
+                    <li><a th:href="@{/carritocompras}">Carrito de Compras</a></li>
+                    <li><a th:href="@{/preguntasfrecuentes}">Preguntas Frecuentes</a></li>
+                    <!-- Mostrar "Mis Pedidos" solo si está autenticado -->
+                    <li sec:authorize="isAuthenticated()">
+                        <a th:href="@{/RegistroPedido}">Mis Pedidos</a>
+                    </li>
+                    <!-- Mostrar "Mi Perfil" solo si está autenticado -->
+                    <li sec:authorize="isAuthenticated()">
+                        <a th:href="@{/cliente/perfil}">Mi Perfil</a>
+                    </li>
+                </ul>
+            </nav>
+            <div>
+                <span th:text="'Bienvenido, ' + ${nombreCliente}"></span>
+                <form th:action="@{/logout}" method="post" id="logoutForm" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-outline-danger btn-sm ms-3">Cerrar sesión</button>
+                </form>
+            </div>
+        </header>
+
+        <section class="pedidos-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="pedido-card">
+                            <div class="card-header-custom">
+                                <i class="bi bi-bag-check-fill me-2"></i>
+                                Mis Pedidos - Historial de Compras
+                            </div>
+                            <div class="card-body p-4" id="pedidos-container">
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-col">
-                <img src="img/logoMundoPan.jpg" alt="Logo MundoPan" class="logo-footer">
+        <footer>
+            <div class="footer-container">
+                <div class="footer-col">
+                    <img src="img/logoMundoPan.jpg" alt="Logo MundoPan" class="logo-footer">
+                </div>
+
+                <div class="footer-col">
+                    <h4>Envíos y garantías</h4>
+                    <ul>
+                        <li>¿Cómo comprar?</li>
+                        <li>Envíos</li>
+                        <li>Términos y condiciones de Garantía</li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>¿Quiénes somos?</h4>
+                    <ul>
+                        <li>Nuestra tienda</li>
+                        <li>Privacidad</li>
+                        <li><a href="reclamos">Libro de Reclamaciones</a></li>
+                        <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li>
+                            <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
+                            Asesor de ventas
+                        </li>
+                        <li>
+                            <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
+                            Área de garantía
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="footer-col">
-                <h4>Envíos y garantías</h4>
-                <ul>
-                    <li>¿Cómo comprar?</li>
-                    <li>Envíos</li>
-                    <li>Términos y condiciones de Garantía</li>
-                </ul>
-            </div>
+            <div class="footer-copy">
+                &copy; Mundo Pan 2025
+            </div>  
+        </footer>
 
-            <div class="footer-col">
-                <h4>¿Quiénes somos?</h4>
-                <ul>
-                    <li>Nuestra tienda</li>
-                    <li>Privacidad</li>
-                    <li><a href="reclamos">Libro de Reclamaciones</a></li>
-                    <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <ul>
-                    <li>
-                        <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
-                        Asesor de ventas
-                    </li>
-                    <li>
-                        <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
-                        Área de garantía
-                    </li>
-                </ul>
-            </div>
-        </div>
-   
-        <div class="footer-copy">
-            &copy; Mundo Pan 2025
-        </div>  
-    </footer>
-    
-   <script src="/js/GuiaPedido.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
+        <script src="/js/GuiaPedido.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

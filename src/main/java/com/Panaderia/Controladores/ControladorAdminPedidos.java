@@ -3,33 +3,37 @@ package com.Panaderia.Controladores;
 import com.Panaderia.Modelo.Pedido;
 import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Repositorio.PedidoRepositorio;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.Panaderia.Servicios.ClientesServicio;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/adminventas")
 public class ControladorAdminPedidos {
 
-    @Autowired
-    private PedidoRepositorio pedidoRepository;
+    private final PedidoRepositorio pedidoRepository;
+    private final ClientesRepositorio clienteRepository;
+    private final ClientesServicio clientesServicio;
 
-    @Autowired
-    private ClientesRepositorio clienteRepository;
+    public ControladorAdminPedidos(PedidoRepositorio pedidoRepository, ClientesRepositorio clienteRepository, ClientesServicio clientesServicio) {
+        this.pedidoRepository = pedidoRepository;
+        this.clienteRepository = clienteRepository;
+        this.clientesServicio = clientesServicio;
+    }
 
     @GetMapping
     public String listarPedidos(Model model) {
+        agregarNombreUsuarioAlModelo(model);
         model.addAttribute("pedidos", pedidoRepository.findAll());
         return "AdminPedidos";
     }
 
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
+        agregarNombreUsuarioAlModelo(model);
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteRepository.findAll());
         return "FormularioPedido";
@@ -43,7 +47,9 @@ public class ControladorAdminPedidos {
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
-        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID no válido: " + id));
+        agregarNombreUsuarioAlModelo(model);
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID no válido: " + id));
         model.addAttribute("pedido", pedido);
         model.addAttribute("clientes", clienteRepository.findAll());
         return "FormularioPedido";
@@ -53,5 +59,19 @@ public class ControladorAdminPedidos {
     public String eliminarPedido(@PathVariable Long id) {
         pedidoRepository.deleteById(id);
         return "redirect:/adminventas";
+    }
+
+    private void agregarNombreUsuarioAlModelo(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            String correo = auth.getName();
+            clientesServicio.findClienteByCorreo(correo).ifPresentOrElse(
+                cliente -> model.addAttribute("nombreUsuario", cliente.getNombreCli()),
+                () -> model.addAttribute("nombreUsuario", correo)
+            );
+        } else {
+            model.addAttribute("nombreUsuario", "Invitado");
+        }
     }
 }

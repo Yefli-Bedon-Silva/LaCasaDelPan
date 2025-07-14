@@ -1,6 +1,8 @@
 package com.Panaderia.Controladores;
 
+import com.Panaderia.Modelo.Clientes;
 import com.Panaderia.Modelo.Producto;
+import com.Panaderia.Servicios.ClientesServicio;
 import com.Panaderia.Servicios.ProductoServicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 
 @Controller
@@ -17,11 +22,17 @@ public class ControladorAdminProductos {
     @Autowired
     private ProductoServicio productoServicio;
 
+    @Autowired
+    private ClientesServicio clientesServicio;
+    
     @GetMapping("/adminproductos")
     public String listarProductos(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String categoria,
             Model model) {
+
+        agregarNombreUsuarioAlModelo(model);
+
 
         List<Producto> productos;
 
@@ -92,38 +103,75 @@ public class ControladorAdminProductos {
         return "redirect:/adminproductos";
     }
 
-    @GetMapping("/listakekes")
-    public String ListaKekes(Model modelo) {
-        List<Producto> lista = productoServicio.getByCategoria("Kekes");
-        modelo.addAttribute("listaproductos", lista);
-        return "ListaKekes";
-    }
-
     @GetMapping("/listapanes")
-    public String ListaPanes(Model modelo) {
+    public String listaPanes(Model modelo) {
         List<Producto> lista = productoServicio.getByCategoria("Panes");
         modelo.addAttribute("listaproductos", lista);
+        agregarNombreClienteAlModelo(modelo);
         return "ListaPanes";
     }
 
+    @GetMapping("/listakekes")
+    public String listaKekes(Model modelo) {
+        List<Producto> lista = productoServicio.getByCategoria("Kekes");
+        modelo.addAttribute("listaproductos", lista);
+        agregarNombreClienteAlModelo(modelo);
+        return "ListaKekes";
+    }
+
     @GetMapping("/listatortas")
-    public String ListaTortas(Model modelo) {
+    public String listaTortas(Model modelo) {
         List<Producto> lista = productoServicio.getByCategoria("Tortas");
         modelo.addAttribute("listaproductos", lista);
+        agregarNombreClienteAlModelo(modelo);
         return "ListaTortas";
     }
 
     @GetMapping("/listabocaditos")
-    public String ListaBocaditos(Model modelo) {
+    public String listaBocaditos(Model modelo) {
         List<Producto> lista = productoServicio.getByCategoria("Bocaditos");
         modelo.addAttribute("listaproductos", lista);
+        agregarNombreClienteAlModelo(modelo);
         return "ListaBocaditos";
     }
 
     @GetMapping("/listasalados")
-    public String ListaSalados(Model modelo) {
+    public String listaSalados(Model modelo) {
         List<Producto> lista = productoServicio.getByCategoria("Salados Personales");
         modelo.addAttribute("listaproductos", lista);
+        agregarNombreClienteAlModelo(modelo);
         return "ListaSalados";
     }
+
+    private void agregarNombreClienteAlModelo(Model modelo) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName())) {
+
+            String correo = authentication.getName();
+            Optional<Clientes> clienteOpt = clientesServicio.findClienteByCorreo(correo);
+
+            if (clienteOpt.isPresent()) {
+                modelo.addAttribute("nombreCliente", clienteOpt.get().getNombreCli());
+                return;
+            }
+        }
+        modelo.addAttribute("nombreCliente", "Invitado");
+    }
+    
+    private void agregarNombreUsuarioAlModelo(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            String correo = auth.getName();
+            clientesServicio.findClienteByCorreo(correo).ifPresentOrElse(
+                cliente -> model.addAttribute("nombreUsuario", cliente.getNombreCli()),
+                () -> model.addAttribute("nombreUsuario", correo)
+            );
+        } else {
+            model.addAttribute("nombreUsuario", "Invitado");
+        }
+    }
+
 }

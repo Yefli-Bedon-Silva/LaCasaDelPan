@@ -92,11 +92,11 @@
                     <li><a href="listapanes">Productos</a></li>
                     <li><a href="carritocompras">Carrito de Compras</a></li>
                     <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
-                    <li><a href="/RegistroPedido">Mis Pedidos</a></li>
+                    <a th:href="@{/RegistroPedido}" sec:authorize="isAuthenticated()">Mis Pedidos</a>
                 </ul>
             </nav>
             <div>
-           <span th:text="'Bienvenido, ' + ${session.cliente.nombreCli}"></span> <!-- Nombre del cliente -->
+           <span th:text="'Bienvenido, ' + ${nombreCliente}"></span>
             <a href="/logout" class="btn btn-outline-danger btn-sm ms-3">Cerrar sesión</a>
         </div>
         </header>
