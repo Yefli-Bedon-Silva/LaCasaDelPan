@@ -29,7 +29,7 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: url('https://image.api.playstation.com/vulcan/ap/rnd/202403/0616/6d39af53baa3f9b0d03d26c833da6076956f56669be1b09e.png') no-repeat center center fixed;
+                background: url('../img/fondopan.jpg') no-repeat center center fixed;
                 background-size: cover;
                 opacity: 0;
                 animation: fadeInUp 0.4s ease forwards;
