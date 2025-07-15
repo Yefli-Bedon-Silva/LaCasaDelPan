@@ -1,7 +1,11 @@
 package com.Panaderia.security;
 
+import com.Panaderia.Modelo.Clientes;
+import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Servicios.ClientesUserDetailsService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +20,9 @@ public class SecurityConfig {
 
     private final ClientesUserDetailsService userDetailsService;
 
+    @Autowired
+    private ClientesRepositorio clienteRepositorio;
+    
     public SecurityConfig(ClientesUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -64,5 +71,21 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+    
+    @Bean
+    public CommandLineRunner encryptPasswords() {
+        return args -> {
+            List<Clientes> clientes = clienteRepositorio.findAll();
+
+            for (Clientes cliente : clientes) {
+                String rawPassword = cliente.getContraseña();
+                if (!rawPassword.startsWith("$2a$")) {
+                    String encrypted = passwordEncoder().encode(rawPassword);
+                    cliente.setContraseña(encrypted);
+                    clienteRepositorio.save(cliente);
+                }
+            }
+        };
     }
 }
