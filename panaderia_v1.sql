@@ -15,6 +15,7 @@ INSERT INTO roles (nombre) VALUES
 ('ROLE_USER'),
 ('ROLE_ADMIN');
 
+SELECT * FROM clientes;
 
 CREATE TABLE IF NOT EXISTS `clientes` (
     `id_cli` int AUTO_INCREMENT PRIMARY KEY,
@@ -99,31 +100,6 @@ INSERT INTO producto (nombre, descripcion, precio, stock, imagen, categoria) VAL
 ('Francesitos', 'Disponible de Lunes a Sábado.', 1, 100, 'https://bonpanperu.com/wp-content/uploads/2023/10/francesitosweb-1.jpg', 'Panes'),
 ('Empanaditas de carne', 'Pan saludable con fibra y granos enteros.', 1, 80, 'https://bonpanperu.com/wp-content/uploads/2023/10/Empanadita-de-carne-60-t-1.jpg', 'Bocaditos');
 
-SELECT * FROM pedido;
-SELECT * FROM pedido_item;
-SELECT * FROM producto;
-SELECT * FROM clientes;
-
-SELECT 
-    p.id_pedido AS pedido_id,
-    c.id_cli AS cliente_id,
-    CONCAT(c.nombre_cli, ' ', c.apellidos_cli) AS cliente_nombre,
-    p.fecha,
-    p.estado,
-    p.total AS total_pedido,
-    pi.id_item AS pedido_item_id,
-    pr.nombre AS producto_nombre,
-    pi.cantidad,
-    pi.precio_unitario,
-    pi.total AS total_item
-FROM pedido p
-JOIN clientes c ON p.id_cli = c.id_cli
-LEFT JOIN pedido_item pi ON pi.id_pedido = p.id_pedido
-LEFT JOIN producto pr ON pi.id_prod = pr.id_prod
-ORDER BY p.id_pedido, pi.id_item;
-
-
-
 CREATE TABLE IF NOT EXISTS reclamo (
     id_reclamo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_cli INT NOT NULL,
@@ -146,3 +122,20 @@ VALUES
 (3, '2025-06-03', 'Atención deficiente', 'El repartidor fue grosero y llegó tarde.', 'en_proceso'),
 (6, '2025-06-04', 'Precio incorrecto', 'Me cobraron más de lo que decía en la web.', 'resuelto'),
 (1, '2025-06-05', 'Otro', 'No recibí boleta y necesito el comprobante.', 'pendiente');
+
+INSERT INTO pedido (id_cli, fecha, estado, total) VALUES
+(1, NOW(), 'pendiente', 21.00),
+(2, NOW(), 'entregado', 81.00),
+(3, NOW(), 'en proceso', 12.00);
+
+INSERT INTO pedido_item (id_pedido, id_prod, cantidad, precio_unitario, total) VALUES
+(1, 2, 3, 1.00, 3.00),
+(1, 12, 3, 1.00, 3.00),
+(1, 6, 1, 14.00, 14.00),
+
+(2, 3, 1, 40.00, 40.00),
+(2, 4, 1, 40.00, 40.00),
+(2, 1, 1, 1.00, 1.00),
+
+(3, 7, 1, 10.00, 10.00),
+(3, 2, 2, 1.00, 2.00);
