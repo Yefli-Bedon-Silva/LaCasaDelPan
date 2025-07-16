@@ -31,9 +31,8 @@ public class ControladorAdminPedidos {
         model.addAttribute("pedidos", pedidoRepository.findAll());
         return "AdminPedidos";
     }
-    
-    
-     @PostMapping("/editar/{id}")
+
+    @PostMapping("/editar/{id}")
     @ResponseBody
     public ResponseEntity<String> actualizarEstado(
             @PathVariable Long id,
@@ -76,14 +75,34 @@ public class ControladorAdminPedidos {
         return "redirect:/adminventas";
     }
 
+    @RestController
+    @RequestMapping("/api/adminventas")
+    public class ApiPedidosController {
+
+        private final PedidoRepositorio pedidoRepositorio;
+
+        public ApiPedidosController(PedidoRepositorio pedidoRepositorio) {
+            this.pedidoRepositorio = pedidoRepositorio;
+        }
+
+        @DeleteMapping("/eliminar/{id}")
+        public ResponseEntity<String> eliminarPedido(@PathVariable Long id) {
+            if (!pedidoRepositorio.existsById(id)) {
+                return ResponseEntity.notFound().build();
+            }
+            pedidoRepositorio.deleteById(id);
+            return ResponseEntity.ok("Pedido eliminado");
+        }
+    }
+
     private void agregarNombreUsuarioAlModelo(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             String correo = auth.getName();
             clientesServicio.findClienteByCorreo(correo).ifPresentOrElse(
-                cliente -> model.addAttribute("nombreUsuario", cliente.getNombreCli()),
-                () -> model.addAttribute("nombreUsuario", correo)
+                    cliente -> model.addAttribute("nombreUsuario", cliente.getNombreCli()),
+                    () -> model.addAttribute("nombreUsuario", correo)
             );
         } else {
             model.addAttribute("nombreUsuario", "Invitado");

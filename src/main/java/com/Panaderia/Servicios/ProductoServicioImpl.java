@@ -2,6 +2,7 @@ package com.Panaderia.Servicios;
 
 import com.Panaderia.dao.ProductoDAO;
 import com.Panaderia.Modelo.Producto;
+import com.Panaderia.Repositorio.PedidoItemRepositorio;
 import com.Panaderia.Repositorio.PedidoRepositorio;
 import com.Panaderia.dao.ProductoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,15 @@ public class ProductoServicioImpl implements ProductoServicio {
     @Autowired
     private ProductoRepositorio productoRepositorio;
 
-    @Autowired
-    private PedidoRepositorio pedidoRepositorio;
+@Autowired
+private PedidoItemRepositorio pedidoItemRepositorio;
 
-    @Override
-    public boolean estaEnPedido(Long idProducto) {
-        return pedidoRepositorio.existeProductoEnPedidos(idProducto);
-    }
-
+@Override
+public boolean estaEnPedido(Long idProducto) {
+    boolean existe = pedidoItemRepositorio.existsByProductoId(idProducto);
+    System.out.println("¿Producto en algún pedido?: " + idProducto + " → " + existe);
+    return existe;
+}
     @Transactional
     @Override
     public List<Producto> get() {

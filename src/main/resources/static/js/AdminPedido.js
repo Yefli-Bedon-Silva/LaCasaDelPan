@@ -28,7 +28,7 @@ function mostrarPedidos(pedidos) {
         <th>Fecha</th>
         <th>Pedido</th>
         <th>Cantidad</th> 
-        <th>Monto($)</th>
+        <th>Monto(S/. )</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
@@ -49,11 +49,14 @@ function mostrarPedidos(pedidos) {
       <td>${pedido.fecha?.substring(0, 10) ?? ''}</td>
       <td>${pedido.items?.map(i => i.nombreProducto).join(", ") ?? ''}</td>
       <td>${cantidadTotal}</td>
-      <td>$${(pedido.items?.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0) ?? 0).toFixed(2)}</td>
+      <td>S/. ${(pedido.items?.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0) ?? 0).toFixed(2)}</td>
       <td id="estado-${pedido.id}">${pedido.estado}</td>
       <td>
         <button class="btn btn-warning btn-sm" onclick="EditarPedido(${pedido.id})">
           <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarPedido(${pedido.id})">
+            <i class="fas fa-trash"></i>
         </button>
       </td>
     `;
@@ -129,7 +132,7 @@ async function EditarPedido(id) {
 
 async function guardarEdicionPedido(modal) {
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const id = document.getElementById('pedidoId').value;
     const estado = document.getElementById('estadoPedido').value;
 
@@ -185,6 +188,40 @@ document.getElementById('btnDetallePedido').addEventListener('click', async () =
 });
 
 
+async function eliminarPedido(id) {
+    const confirmacion = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción eliminará el pedido permanentemente.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirmacion.isConfirmed)
+        return;
+
+    try {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        const res = await fetch(`/api/adminventas/eliminar/${id}`, {
+            method: 'DELETE',
+            headers: {
+                [csrfHeaderName]: csrfToken
+            }
+        });
+
+        if (!res.ok)
+            throw new Error('Error al eliminar pedido');
+
+        Swal.fire('Eliminado', 'El pedido fue eliminado.', 'success');
+        listarpedido();
+    } catch (e) {
+        Swal.fire('Error', e.message, 'error');
+    }
+}
+
 function mostrarModalDetallePedido(pedido) {
     // Crear modal si no existe
     let modalDiv = document.getElementById('modalDetallePedido');
@@ -220,7 +257,7 @@ function mostrarModalDetallePedido(pedido) {
           <p><strong>Correo:</strong> ${pedido.cliente?.correo ?? ''}</p>
           <p><strong>Fecha:</strong> ${pedido.fecha?.substring(0, 10) ?? ''}</p>
           <p><strong>Estado:</strong> ${pedido.estado}</p>
-          <p><strong>Total:</strong> $${(pedido.items?.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0) ?? 0).toFixed(2)}</p>
+          <p><strong>Total:</strong> S/. ${(pedido.items?.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0) ?? 0).toFixed(2)}</p>
 
 
           <h6>Productos:</h6>

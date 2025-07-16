@@ -310,53 +310,46 @@
             </div>
         </section>
 
-        <footer>
-            <div class="footer-container">
-
-                <div class="footer-col">
-                    <img src="img/logoMundoPan.jpg" alt="Logo MundoPan" class="logo-footer">
-                </div>
-
-                <div class="footer-col">
-                    <h4>Envíos y garantías</h4>
-                    <ul>
-                        <li>¿Cómo comprar?</li>
-                        <li>Envíos</li>
-                        <li>Términos y condiciones de Garantía</li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>¿Quiénes somos?</h4>
-                    <ul>
-                        <li>Nuestra tienda</li>
-                        <li>Privacidad</li>
-                        <li><a href="reclamos">Libro de Reclamaciones</a></li>
-                        <li><a href="preguntasfrecuentes">Preguntas Frecuentes</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Contacto</h4>
-                    <ul>
-                        <li>
-                            <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
-                            Asesor de ventas
-                        </li>
-                        <li>
-                            <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" alt="WhatsApp" class="icono-whatsapp">
-                            Área de garantía
-
-                        </li>
-                    </ul>
-                </div>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <img th:src="@{/img/logoMundoPan.jpg}" alt="Logo MundoPan" class="logo-footer">
             </div>
 
+            <div class="footer-col">
+                <h4>Envíos y garantías</h4>
+                <ul>
+                    <li>¿Cómo comprar?</li>
+                    <li>Envíos</li>
+                    <li>Términos y condiciones de Garantía</li>
+                </ul>
+            </div>
 
-            <div class="footer-copy">
-                &copy; La Casa del Pan 2025
-            </div>  
-        </footer>  
+            <div class="footer-col">
+                <h4>¿Quiénes somos?</h4>
+                <ul>
+                    <li>Nuestra tienda</li>
+                    <li>Privacidad</li>
+                    <li><a th:href="@{/reclamos}">Libro de Reclamaciones</a></li>
+                    <li><a th:href="@{/preguntasfrecuentes}">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul>
+                    <li>
+                        <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" class="icono-whatsapp"> Asesor de ventas
+                    </li>
+                    <li>
+                        <img src="https://img.icons8.com/?size=100&id=16713&format=png&color=000000" class="icono-whatsapp"> Área de garantía
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copy">&copy; La Casa del Pan 2025</div>
+    </footer> 
 
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

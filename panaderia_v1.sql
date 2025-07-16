@@ -15,7 +15,7 @@ INSERT INTO roles (nombre) VALUES
 ('ROLE_ADMIN');
 
 SELECT * FROM clientes;
-
+SELECT * FROM pedido;
 CREATE TABLE IF NOT EXISTS `clientes` (
     `id_cli` int AUTO_INCREMENT PRIMARY KEY,
     `nombre_cli` varchar(30) NOT NULL,
@@ -126,7 +126,10 @@ INSERT INTO pedido (id_cli, fecha, estado, total) VALUES
 (1, NOW(), 'pendiente', 21.00),
 (2, NOW(), 'entregado', 81.00),
 (3, NOW(), 'pendiente', 12.00);
-
+SELECT * FROM pedido;
+SELECT * FROM pedido_item;
+DROP TABLE pedido;
+DROP TABLE pedido_item;
 INSERT INTO pedido_item (id_pedido, id_prod, cantidad, precio_unitario, total) VALUES
 (1, 2, 3, 1.00, 3.00),
 (1, 12, 3, 1.00, 3.00),
