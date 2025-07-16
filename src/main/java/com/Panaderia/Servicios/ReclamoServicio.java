@@ -9,6 +9,7 @@ public interface ReclamoServicio {
     void save(Reclamo producto);
     void update(Reclamo producto);
     void delete(Integer id);
+    long contarReclamos();
     List<Reclamo> getByEstado(String estado);
     /*List<Reclamo> buscar(String texto);*/
    /* List<Reclamo> buscarPorTextoYCategoria(String texto, String categoria);*/

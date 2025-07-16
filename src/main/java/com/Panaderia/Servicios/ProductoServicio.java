@@ -11,6 +11,7 @@ public interface ProductoServicio {
     void save(Producto producto);
     void update(Producto producto);
     void delete(Long id);
+    long contarProductos();
     List<Producto> getByCategoria(String categoria);
     List<Producto> buscar(String texto);
     List<Producto> buscarPorTextoYCategoria(String texto, String categoria);

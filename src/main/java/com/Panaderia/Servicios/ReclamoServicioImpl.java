@@ -2,7 +2,8 @@ package com.Panaderia.Servicios;
 
 import com.Panaderia.dao.ReclamoDAO;
 import com.Panaderia.Modelo.Reclamo;
-/*import com.Panaderia.Repositorio.ReclamoRepositorio;*/
+import com.Panaderia.Repositorio.ReclamoRepositorio;
+import com.Panaderia.Repositorio.ReclamoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +14,9 @@ public class ReclamoServicioImpl implements ReclamoServicio {
 
     @Autowired
     private ReclamoDAO reclamoDAO;
-    /*@Autowired
-    private ReclamoRepositorio reclamoRepositorio;*/
+
+    @Autowired
+    private ReclamoRepositorio reclamoRepository;
 
     @Transactional
     @Override
@@ -50,6 +52,11 @@ public class ReclamoServicioImpl implements ReclamoServicio {
     @Override
     public List<Reclamo> getByEstado(String estado) {
         return reclamoDAO.getByEstado(estado);
+    }
+
+    @Override
+    public long contarReclamos() {
+        return reclamoRepository.count();
     }
 
 }

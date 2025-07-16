@@ -53,53 +53,41 @@
 
             <div class="container-fluid py-5">
                 <h1 class="fw-bold text-center mb-4">Bienvenido Administrador(a)</h1>
-                <h2 class="text-start ps-3 mb-4">Resumen</h2>
+                <h4 class="text-start ps-3 mb-4">Resumen:</h4>
 
                 <div class="row g-4 mb-5">
-                    <div class="col-md-3">
-                        <div class="card text-center p-3">
-                            <h5>Usuarios Registrados</h5>
-                            <p class="display-4" th:text="${totalUsuarios}">150</p>
+                    <div class="col-md-6">
+                        <div class="card text-center p-4">
+                            <h4>Clientes</h4>
+                            <p class="display-3" th:text="${totalUsuarios}">150</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center p-3">
-                            <h5>Productos</h5>
-                            <p class="display-4" th:text="${totalProductos}">40</p>
+
+                    <!-- Productos ) -->
+                    <div class="col-md-6">
+                        <div class="card text-center p-4">
+                            <h4>Productos</h4>
+                            <p class="display-3" th:text="${totalProductos}">40</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center p-3">
-                            <h5>Ventas Hoy</h5>
-                            <p class="display-4" th:text="${ventasHoy}">25</p>
+
+                    <!-- Reclamos  -->
+                    <div class="col-md-6">
+                        <div class="card text-center p-4">
+                            <h4>Reclamos</h4>
+                            <p class="display-3" th:text="${totalReclamos}">10</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center p-3">
-                            <h5>Pedidos Pendientes</h5>
-                            <p class="display-4" th:text="${pedidosPendientes}">8</p>
+
+                    <!-- Pedidos  -->
+                    <div class="col-md-6">
+                        <div class="card text-center p-4">
+                            <h4>Pedidos Pendientes</h4>
+                            <p class="display-3" th:text="${totalPedidos}">25</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <!-- Gráfico de barras: Ventas por día -->
-                    <div class="col-md-6">
-                        <canvas id="ventasChart"></canvas>
-                    </div>
-                    <!-- Gráfico circular: Distribución de productos -->
-                    <div class="col-md-6">
-                        <canvas id="productosChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                document.getElementById('toggleSidebar').addEventListener('click', () => {
-                    document.querySelector('.sidebar').classList.toggle('d-none');
-                    document.querySelector('.content').classList.toggle('collapsed');
-                });
-            </script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    </body>
-</html>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+                </body>
+                </html>

@@ -17,17 +17,15 @@ public class ProductoServicioImpl implements ProductoServicio {
     private ProductoDAO productoDAO;
     @Autowired
     private ProductoRepositorio productoRepositorio;
-    
-     @Autowired
-    private PedidoRepositorio pedidoRepositorio;    
-     
-     
-      @Override
+
+    @Autowired
+    private PedidoRepositorio pedidoRepositorio;
+
+    @Override
     public boolean estaEnPedido(Long idProducto) {
-    return pedidoRepositorio.existeProductoEnPedidos(idProducto);
-        }
-    
-    
+        return pedidoRepositorio.existeProductoEnPedidos(idProducto);
+    }
+
     @Transactional
     @Override
     public List<Producto> get() {
@@ -62,6 +60,11 @@ public class ProductoServicioImpl implements ProductoServicio {
     @Override
     public List<Producto> getByCategoria(String categoria) {
         return productoDAO.getByCategoria(categoria);
+    }
+
+    @Override
+    public long contarProductos() {
+        return productoRepositorio.count();
     }
 
     @Override

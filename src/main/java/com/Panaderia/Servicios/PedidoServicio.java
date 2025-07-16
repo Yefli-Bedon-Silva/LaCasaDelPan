@@ -81,7 +81,9 @@ public Pedido actualizarEstadoPedido(Long id, String nuevoEstado) {
         }
         pedidoRepositorio.deleteById(id);
     }
-    
+     public long contarPedidosPendientes() {
+        return pedidoRepositorio.countByEstadoIgnoreCase("pendiente");
+    }
     
     
     public List<PedidoDTO> listarPedidosPorCliente(Integer idCli) {

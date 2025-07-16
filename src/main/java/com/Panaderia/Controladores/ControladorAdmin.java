@@ -2,6 +2,9 @@ package com.Panaderia.Controladores;
 
 import com.Panaderia.Modelo.Clientes;
 import com.Panaderia.Servicios.ClientesServicio;
+import com.Panaderia.Servicios.PedidoServicio;
+import com.Panaderia.Servicios.ProductoServicio;
+import com.Panaderia.Servicios.ReclamoServicio;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,9 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ControladorAdmin {
 
     private final ClientesServicio clientesServicio;
+    private final ProductoServicio productoServicio;
+    private final ReclamoServicio reclamoServicio;
+    private final PedidoServicio pedidoServicio;
 
-    public ControladorAdmin(ClientesServicio clientesServicio) {
+    public ControladorAdmin(ClientesServicio clientesServicio,
+            ProductoServicio productoServicio,
+            ReclamoServicio reclamoServicio,
+            PedidoServicio pedidoServicio) {      
         this.clientesServicio = clientesServicio;
+        this.productoServicio = productoServicio;
+        this.reclamoServicio = reclamoServicio;
+        this.pedidoServicio = pedidoServicio;
     }
 
     @GetMapping("/admin")
@@ -27,11 +39,10 @@ public class ControladorAdmin {
             model.addAttribute("nombreUsuario", correo);
         }
 
-        // Datos 
         model.addAttribute("totalUsuarios", clientesServicio.contarClientes());
-        model.addAttribute("totalProductos", 14); 
-        model.addAttribute("ventasHoy", 12);      
-        model.addAttribute("pedidosPendientes", 5);
+        model.addAttribute("totalProductos", productoServicio.contarProductos());
+        model.addAttribute("totalReclamos", reclamoServicio.contarReclamos());
+        model.addAttribute("pedidosPendientes", pedidoServicio.contarPedidosPendientes());
 
         return "admin";
     }

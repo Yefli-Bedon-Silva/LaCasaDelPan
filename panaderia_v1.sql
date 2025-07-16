@@ -125,7 +125,7 @@ VALUES
 INSERT INTO pedido (id_cli, fecha, estado, total) VALUES
 (1, NOW(), 'pendiente', 21.00),
 (2, NOW(), 'entregado', 81.00),
-(3, NOW(), 'en proceso', 12.00);
+(3, NOW(), 'pendiente', 12.00);
 
 INSERT INTO pedido_item (id_pedido, id_prod, cantidad, precio_unitario, total) VALUES
 (1, 2, 3, 1.00, 3.00),
