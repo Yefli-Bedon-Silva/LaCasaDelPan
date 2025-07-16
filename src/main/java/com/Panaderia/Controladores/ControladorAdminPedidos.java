@@ -4,6 +4,7 @@ import com.Panaderia.Modelo.Pedido;
 import com.Panaderia.Repositorio.ClientesRepositorio;
 import com.Panaderia.Repositorio.PedidoRepositorio;
 import com.Panaderia.Servicios.ClientesServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,20 @@ public class ControladorAdminPedidos {
         agregarNombreUsuarioAlModelo(model);
         model.addAttribute("pedidos", pedidoRepository.findAll());
         return "AdminPedidos";
+    }
+    
+    
+     @PostMapping("/editar/{id}")
+    @ResponseBody
+    public ResponseEntity<String> actualizarEstado(
+            @PathVariable Long id,
+            @RequestParam("estado") String estado
+    ) {
+        return pedidoRepository.findById(id).map(pedido -> {
+            pedido.setEstado(estado); // Actualizamos el estado del pedido
+            pedidoRepository.save(pedido);
+            return ResponseEntity.ok(estado); // Retornamos el nuevo estado del pedido
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/nuevo")

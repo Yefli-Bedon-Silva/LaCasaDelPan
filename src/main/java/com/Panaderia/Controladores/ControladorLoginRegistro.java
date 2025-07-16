@@ -69,7 +69,7 @@ public class ControladorLoginRegistro {
         // Asignar rol por defecto (ROLE_USER)
         clientesServicio.asignarRolPorDefecto(cliente);
 
-        clientesServicio.agregarCliente(cliente);
+        clientesServicio.agregarClientePrincipal(cliente);
 
         model.addAttribute("success", true);
         model.addAttribute("registerDto", new RegisterDto()); // Limpiar formulario

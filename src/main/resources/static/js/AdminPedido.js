@@ -96,7 +96,6 @@ async function EditarPedido(id) {
                 <label for="estadoPedido" class="form-label">Estado</label>
                 <select class="form-select" id="estadoPedido" name="estado" required>
                 <option value="pendiente">Pendiente</option>
-                <option value="en proceso">En proceso</option>
                 <option value="entregado">Entregado</option>
                 <option value="cancelado">Cancelado</option>
                 </select>

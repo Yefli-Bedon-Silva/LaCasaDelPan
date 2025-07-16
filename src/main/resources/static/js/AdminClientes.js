@@ -136,6 +136,9 @@ async function agregarCliente() {
 
 // Función para guardar el cliente
 async function guardarCliente() {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
     const cliente = {
         nombreCli: document.getElementById('username').value.trim(),
         apellidosCli: document.getElementById('lastname').value.trim(),
@@ -151,12 +154,21 @@ async function guardarCliente() {
         alert("¡Error! Todos los campos son obligatorios.");
         return;
     }
+    
+    // Validación de la contraseña al menos 6 caracteres
+     if (cliente.contraseña.length < 6) {
+        alert("¡Error! La contraseña debe tener al menos 6 caracteres.");
+        return;
+    }
 
     // Enviar el cliente al backend
     try {
         const response = await fetch('/clientes/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+        'Content-Type': 'application/json',
+        [header]: token  // Aquí envías el token CSRF
+            },
             body: JSON.stringify(cliente)
         });
 
@@ -229,7 +241,7 @@ async function editarCliente(id) {
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3">
                                     <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" value="${cliente.contraseña}" required>
+                                    <input type="password" class="form-control" id="password" placeholder="Dejar vacío si no se cambia">
                                 </div>
                             </div>
 
@@ -259,28 +271,51 @@ async function editarCliente(id) {
 
     // Función para actualizar el cliente
     async function actualizarCliente(id) {
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+     const nuevaContra = document.getElementById('password').value.trim();
+    
+    
     const cliente = {
-        nombreCli: document.getElementById('username').value.trim(),
-        apellidosCli: document.getElementById('lastname').value.trim(),
-        correo: document.getElementById('email').value.trim(),
-        dni: document.getElementById('dni').value.trim(),
-        direccion: document.getElementById('direccion').value.trim(),
-        telefono: document.getElementById('telefono').value.trim(),
-        contraseña: document.getElementById('password').value.trim()
-    };
+    nombreCli: document.getElementById('username').value.trim(),
+    apellidosCli: document.getElementById('lastname').value.trim(),
+    correo: document.getElementById('email').value.trim(),
+    dni: document.getElementById('dni').value.trim(),
+    direccion: document.getElementById('direccion').value.trim(),
+    telefono: document.getElementById('telefono').value.trim()
+        };
+
+    // Solo incluye la contraseña si se escribió algo nuevo
+        if (nuevaContra) {
+        if (nuevaContra.length < 6) {
+            alert("¡Error! La contraseña debe tener al menos 6 caracteres.");
+            return;
+        }
+        cliente.contraseña = nuevaContra;
+    }
 
     // Validación de campos
-    if (!cliente.nombreCli || !cliente.apellidosCli || !cliente.correo || !cliente.dni || !cliente.direccion || !cliente.telefono || !cliente.contraseña) {
-        alert("¡Error! Todos los campos son obligatorios.");
-        return;
-    }
+    if (
+    !cliente.nombreCli || 
+    !cliente.apellidosCli || 
+    !cliente.correo || 
+    !cliente.dni || 
+    !cliente.direccion || 
+    !cliente.telefono
+        ) {
+    alert("¡Error! Todos los campos son obligatorios, excepto la contraseña si no deseas cambiarla.");
+    return;
+        }
 
     // Enviar los datos al backend para actualizar el cliente
     try {
         const response = await fetch(`/clientes/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(cliente)
+              headers: {
+        'Content-Type': 'application/json',
+        [header]: token
+         },
+         body: JSON.stringify(cliente)
         });
 
         if (response.ok) {
@@ -301,10 +336,16 @@ async function editarCliente(id) {
 
 
 function borrarCliente(id) {
+      const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    
     console.log('ID Cliente a borrar:', id);  // Verifica el ID en la consola
 
-    fetch(`/clientes/${id}`, {
-        method: 'DELETE',
+     fetch(`/clientes/${id}`, {
+    method: 'DELETE',
+    headers: {
+        [header]: token
+    }
     })
     .then(response => {
         if (response.ok) {

@@ -63,7 +63,7 @@ public Pedido actualizarEstadoPedido(Long id, String nuevoEstado) {
     String estadoNormalizado = nuevoEstado.toLowerCase().trim();
 
     // Validamos que el estado sea uno permitido
-    List<String> estadosValidos = List.of("pendiente", "en proceso", "entregado", "cancelado");
+    List<String> estadosValidos = List.of("pendiente", "entregado", "cancelado");
     if (!estadosValidos.contains(estadoNormalizado)) {
         throw new IllegalArgumentException("Estado inválido: " + nuevoEstado);
     }
