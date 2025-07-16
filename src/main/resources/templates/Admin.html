@@ -53,7 +53,7 @@
 
             <div class="container-fluid py-5">
                 <h1 class="fw-bold text-center mb-4">Bienvenido Administrador(a)</h1>
-                <h4 class="text-start ps-3 mb-4">Dashboard:</h4>
+                <h2 class="text-start ps-3 mb-4">Resumen</h2>
 
                 <div class="row g-4 mb-5">
                     <div class="col-md-3">
@@ -94,52 +94,6 @@
                 </div>
             </div>
 
-            <script>
-                // Datos 
-                const ventasData = {
-                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                    datasets: [{
-                            label: 'Ventas',
-                            data: [12, 19, 15, 22, 18, 25, 20],
-                            backgroundColor: 'rgba(182, 141, 64, 0.7)'
-                        }]
-                };
-
-                const productosData = {
-                    labels: ['Pan Francés', 'Alfajores', 'Keke Vainilla', 'Torta Chocolate'],
-                    datasets: [{
-                            label: 'Productos vendidos',
-                            data: [120, 100, 40, 30],
-                            backgroundColor: [
-                                'rgba(182, 141, 64, 0.7)',
-                                'rgba(150, 120, 50, 0.7)',
-                                'rgba(200, 170, 80, 0.7)',
-                                'rgba(220, 190, 100, 0.7)'
-                            ]
-                        }]
-                };
-
-                // Configuración y renderizado de gráficos
-                const ctxVentas = document.getElementById('ventasChart').getContext('2d');
-                new Chart(ctxVentas, {
-                    type: 'bar',
-                    data: ventasData,
-                    options: {
-                        responsive: true,
-                        plugins: {legend: {display: false}}
-                    }
-                });
-
-                const ctxProductos = document.getElementById('productosChart').getContext('2d');
-                new Chart(ctxProductos, {
-                    type: 'doughnut',
-                    data: productosData,
-                    options: {
-                        responsive: true,
-                        plugins: {legend: {position: 'bottom'}}
-                    }
-                });
-            </script>
             <script>
                 document.getElementById('toggleSidebar').addEventListener('click', () => {
                     document.querySelector('.sidebar').classList.toggle('d-none');

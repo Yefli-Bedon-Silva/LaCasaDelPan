@@ -1,81 +1,320 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" />
-    <link rel="stylesheet" href="/css/Registro.css" />
-</head>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Registro</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" />
+        
+    </head>
+    <style>
+        /* Animación de fade in */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-<body>
-    <div class="register-container">
-        <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDqsMu0iE6WJTNIRIbRfOvQbPrG1FrWPjCHXAJPhZBV8FSsbf1" alt="Logo MundoPan"
-             class="logo img-fluid mx-auto d-block" />
-        <h1 class="mb-4">Regístrate</h1>
+        /* Estilos generales */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 0;
+            animation: fadeInUp 0.4s ease forwards;
+            position: relative;
+        }
 
-        <!-- Formulario que envía a /registro POST -->
-        <form th:action="@{/registro}" th:object="${registerDto}" method="post" novalidate>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" th:field="*{nombreCli}" class="form-control" placeholder="Nombre" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('nombreCli')}" th:errors="*{nombreCli}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" th:field="*{apellidosCli}" class="form-control" placeholder="Apellidos" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('apellidosCli')}" th:errors="*{apellidosCli}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" th:field="*{correo}" class="form-control" placeholder="Correo Electrónico" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                <input type="text" th:field="*{dni}" class="form-control" placeholder="DNI" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                <input type="text" th:field="*{direccion}" class="form-control" placeholder="Dirección" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input type="text" th:field="*{telefono}" class="form-control" placeholder="Teléfono" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
-            </div>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('../img/fondopan.jpg') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 1;
+            animation: fadeInUp 0.4s ease forwards;
+            z-index: -1;
+        }
 
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-key"></i></span>
-                <input type="password" th:field="*{contraseña}" class="form-control" placeholder="Contraseña" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('contraseña')}" th:errors="*{contraseña}"></div>
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-key"></i></span>
-                <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="Confirmar Contraseña" required />
-                <div class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-            </div>
 
-            <!-- Mensaje de éxito -->
-            <div th:if="${success}" class="alert alert-success">
-                Registro exitoso, ahora puedes <a th:href="@{/login}">iniciar sesión</a>.
-            </div>
+        .register-container {
+            background: #fff;
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.4s ease forwards;
+            margin-bottom: 2rem;
+        }
 
-            <button type="submit" class="btn btn-register w-100">Regístrate</button>
-            <p>¿Ya tienes una cuenta? <a th:href="@{/login}" class="link">Iniciar Sesión</a></p>
-        </form>
-    </div>
 
-    <script src="/js/Registro.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-            crossorigin="anonymous"></script>
-</body>
+        .logo {
+            width: 200px;
+            margin-bottom: 1rem;
+        }
+
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #1a2537;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-sizing: border-box;
+        }
+
+        /* Espaciado entre grupo y mensaje de error */
+        .register-container form > div.mb-3 {
+            margin-bottom: 2rem;
+        }
+
+        /* Estilo de los mensajes de error */
+        .text-danger,
+        .text-danger.small {
+            display: block;           /* siempre en línea nueva */
+            margin-top: 0.25rem;      /* espacio arriba del mensaje */
+            font-size: 0.875rem;
+            color: #dc3545;
+            line-height: 1.2;
+            white-space: normal;
+            text-align: left;
+            padding-left: 0;
+        }
+
+        /* Botón de registro */
+        .btn-register {
+            background-color: #1a2537;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-register:hover {
+            background-color: cadetblue;
+            color: white;
+        }
+
+        /* Títulos y enlaces */
+        h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        p {
+            margin-top: 1rem;
+            color: #555;
+        }
+
+        a.link {
+            color: #1a2537;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        a.link:hover {
+            color: cadetblue;
+        }
+
+        /* Estilo del mensaje de éxito */
+        .alert.alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Header y footer  */
+        header {
+            background-color: #222;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer {
+            background-color: #000;
+            color: white;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-footer {
+            width: 120px;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        .icono-whatsapp {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            padding-top: 10px;
+        }
+    </style>
+
+    <body>
+        <div class="register-container">
+            <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDqsMu0iE6WJTNIRIbRfOvQbPrG1FrWPjCHXAJPhZBV8FSsbf1" alt="Logo MundoPan"
+                 class="logo img-fluid mx-auto d-block" />
+            <h1 class="mb-4">Regístrate</h1>
+
+            <!-- Formulario que envía a /registro POST -->
+            <form th:action="@{/registro}" th:object="${registerDto}" method="post" novalidate>
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" th:field="*{nombreCli}" class="form-control" placeholder="Nombre" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nombreCli')}" th:errors="*{nombreCli}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" th:field="*{apellidosCli}" class="form-control" placeholder="Apellidos" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('apellidosCli')}" th:errors="*{apellidosCli}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" th:field="*{correo}" class="form-control" placeholder="Correo Electrónico" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input type="text" th:field="*{dni}" class="form-control" placeholder="DNI" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" th:field="*{direccion}" class="form-control" placeholder="Dirección" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input type="text" th:field="*{telefono}" class="form-control" placeholder="Teléfono" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <input type="password" th:field="*{contraseña}" class="form-control" placeholder="Contraseña" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('contraseña')}" th:errors="*{contraseña}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="Confirmar Contraseña" required />
+                    </div>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                </div>
+
+
+                <!-- Mensaje de éxito -->
+                <div th:if="${success}" class="alert alert-success">
+                    Registro exitoso, ahora puedes <a th:href="@{/login}">iniciar sesión</a>.
+                </div>
+
+                <button type="submit" class="btn btn-register w-100">Regístrate</button>
+                <p>¿Ya tienes una cuenta? <a th:href="@{/login}" class="link">Iniciar Sesión</a></p>
+            </form>
+        </div>
+
+        <script src="/js/Registro.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    </body>
 
 </html>

@@ -10,7 +10,6 @@ CREATE TABLE `roles` (
     `nombre` VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
 INSERT INTO roles (nombre) VALUES 
 ('ROLE_USER'),
 ('ROLE_ADMIN');
